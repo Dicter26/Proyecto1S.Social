@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/RegistroLiterario',{
 //Modelo de la base de datos para el registro literario
 const modeloRegistro = new mongoose.Schema({
     titulo: String,
-    autor: String,
+    autores: Array,
     editorial: String,
     fecha: String
 })
@@ -30,21 +30,21 @@ const Registro = mongoose.model('Registro', modeloRegistro)
 
 //definicion de la rutas para manejar las peticiones del cliente
 //POST petición a /libros para crear un nuevo libro
-app.post('/libros', function(req, res){
-    const libro = req.body.libro
+app.post('/libros', async (req, res) =>{ //req: request, res: response
+    const libro = req.body.libro //constante u objeto que obtiene lo que nos mandan en la solicitud del cliente
     console.log({ libro })
-    Registro.create({ //creamos el registro con el nuevo libro y sus datos correspondientes
-        titulo: libro.titulo,
-        autor: libro.autor,
+    try{
+    const registro = await Registro.create({ //creamos el libro cazando los parametros que vienen en el objeto que nos mandan y nuestro modelo de la bd
+        titulo : libro.titulo,
+        autores: libro.autores,
         editorial: libro.editorial,
         fecha: libro.fecha
-    }, (err, newBook) => { //enviamos una respuesta al cliente si es que se produjo un error o la petición fue exitosa
-        if(err){
-            return res.status(500).json({message: err})
-        }else{
-            return res.status(200).json({message: "libro nuevo creado"})
-        }
     })
+    res.status(200).json({ message: "libro nuevo creado"})
+    }catch (error){
+        console.log(error.message)
+        res.status(500).json({ message: error.message })
+    }
 })
 
 //GET petición a /libros para mostrar todos los libros
