@@ -40,13 +40,66 @@ app.post('/libros', async (req, res) =>{ //req: request, res: response
         editorial: libro.editorial,
         fecha: libro.fecha
     })
-    res.status(200).json({ message: "libro nuevo creado"})
+    res.status(200).json({ message: "libro nuevo creado"}) //mensaje de exito si podemos crear el libro
     }catch (error){
         console.log(error.message)
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message }) //devolvemos un status 500 como error si no podemos insertar el libro
     }
 })
 
 //GET petición a /libros para mostrar todos los libros
+app.get('/libros', async (req, res) => {
+    try{
+        const registros = await Registro.find({}) //mandamos a traer todos los registros de la base de datos
+        console.log(registros)
+        res.status(200).json({ registros }) //devolvemos los registros si todo salió bien
+    }catch (error){
+        console.log(error.message)
+        res.status(500).json({ message: error.message }) //devolvemos el error si se genera
+    }
+})
+
 //GET petición a /libros/:id para mostrar un libro en particular
+app.get('/libros/:id', async (req, res) => {
+    try{
+        const registro = await Registro.findOne({ _id: req.params.id })
+        console.log({ registro })
+        res.status(200).json({ registro })
+    }catch (error){
+        res.status(500).json({ message: error.message })
+    }
+})
+
 //DELETE petición a /libros/:id para eliminar un libro en particular
+app.delete('/libros/:id', async (req, res) => {
+    try{
+        const registro = await Registro.findByIdAndDelete(req.params.id)
+        if(!registro){
+            return res.status(404).json({ message: `no se encontro algun producto con ${req.params.id}` })
+        }
+        res.status(200).json({ registro })
+    }catch (error){
+        res.status(500).json({ message : error.message })
+    }
+})
+
+//PUT peticion a /libros/:id para traer un libro y actualizarlo
+app.put('/libros/:id', async (req, res) => {
+    try{
+        const body = req.body
+        const id = req.params.id
+        const registro = await Registro.findByIdAndUpdate(req.params.id , {
+            titulo: req.body.titulo,
+            autores: req.body.autores,
+            editorial: req.body.editorial,
+            fecha: req.body.fecha
+        })
+        if(!registro){
+            return res.status(404).json({ message: `registro con ${id} no encontrado` })
+        }
+        const updatedProduct = await Registro.findById(id)
+        res.status(200).json({ updatedProduct })
+    }catch(error){
+        res.status(500).json({ message: error.message })
+    }
+})
