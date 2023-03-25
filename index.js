@@ -1,13 +1,13 @@
-const express = require('express')
+const express = require('express') //instancia de express
+const mongoose = require('mongoose') //instancia de mongoose
+const app = express() //inicializamos la aplicación
+const Registro = require('./src/modelos/modelRegistro')
 
-//inicializamos la aplicación
-const app = express()
+//funcion que inicia la aplicación y escucha en el puerto 8000
 app.use(express.json())
 app.listen(8000, () => {
     console.log('Iniciada app que escucha el puerto 8000')
 })
-
-const mongoose = require('mongoose')
 
 //funcion para la conexión a la base de datos
 mongoose.connect('mongodb://localhost:27017/RegistroLiterario',{
@@ -17,16 +17,6 @@ mongoose.connect('mongodb://localhost:27017/RegistroLiterario',{
 }).catch((error) => {
     console.log(error)
 })
-
-//Modelo de la base de datos para el registro literario
-const modeloRegistro = new mongoose.Schema({
-    titulo: String,
-    autores: Array,
-    editorial: String,
-    fecha: String
-})
-
-const Registro = mongoose.model('Registro', modeloRegistro)
 
 //definicion de la rutas para manejar las peticiones del cliente
 //POST petición a /libros para crear un nuevo libro
