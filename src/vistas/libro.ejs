@@ -1,0 +1,69 @@
+<% let encabezado = {
+    autores: [
+        ["Dicter Tadeo García Rosas", 'dicter.r26@ciencias.unam.mx']
+    ],
+    descripcion: 'Detalle del Libro',
+    fechaCreacion: '24/03/23',
+    palabrasClave: 'libro,detalle,ejemplo,node.js,express,ejs',
+    jquery: true
+} %>
+<%- include('comunes/encabezado_html', {datos: encabezado}) %>
+        <title>
+            Detalle del libro
+            <%= `"${Registro.obtenerId()}"` %>
+            - Proyecto final CIDW
+        </title>
+    </head>
+    <body>
+        <div >
+            <table class="table table-bordered table-hover" >
+                <thead class="thead-light" >
+                    <tr>
+                        <th>ID</th>
+                        <th>Titulo</th>
+                        <th>Autores</th>
+                        <th>Editorial</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><%= Registro.obtenerId() %></td>
+                        <td><%= usuario.obtenerTitulo() %></td>
+                        <td><%= usuario.obtenerAutores() %></td>
+                        <td><%= usuario.obtenerEditorial() %></td>
+                        <td><%= usuario.obtenerFecha() %></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="eliminar_libro_btn" type="button" name="eliminar_libro_btn"
+                    class="btn btn-danger" >
+                Borrar libro
+            </button>
+        </div>
+        <%- include('comunes/pie_pagina') %>
+        <script >
+            $('#eliminar_libro_btn').click(function(eventoClick) {
+                if (!confirm('¿Borrar? Esta acción no puede deshacerse')) return
+                let botonBorrar = $(this)
+                botonBorrar.prop('disabled', true)
+                botonBorrar.removeClass('btn-danger')
+                botonBorrar.addClass('btn-secondary')
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/usuarios/<%= Registro.obtenerId() %>",
+                    success: function(respuesta) {
+                        alert(`El libro "${respuesta}" ha sido eliminado.`)
+                        window.location.href = '/'
+                    },
+                    error: function(ajax, mensaje) {
+                        alert('Ocurrió un problema al borrar al usuario.')
+                        botonBorrar.removeClass('btn-secondary')
+                        botonBorrar.addClass('btn-danger')
+                        botonBorrar.prop('disabled', false)
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

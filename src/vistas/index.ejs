@@ -1,0 +1,78 @@
+<% let encabezado = {
+    autores: [
+        ["Dicter Tadeo García Rosasa", 'dicter.r26@ciencias.unam.mx']
+    ],
+    descripcion: 'Portal principal',
+    fechaCreacion: '24/03/23',
+    palabrasClave: 'index,portal,ejemplo,node.js,express,ejs',
+    jquery: true
+} %>
+<%- include('comunes/encabezado_html', {datos: encabezado}) %>
+        <title>Portal - Registro Literario</title>
+    </head>
+    <body>
+        <h1>Registro Literario | Proyecto Final CIDW</h1>
+        <h2>Registrar Libro</h2>
+        <form id="datos_libro" action="#" method="post">
+            <div class="form-group" >
+                <label for="identificador_libro" >ID:</label>
+                <input id="identificador_libro" type="number"
+                       name="identificador_libro" class="form-control" >
+            </div>
+            <div class="form-group" >
+                <label for="titulo_libro" >Titulo:</label>
+                <input id="titulo_libro" type="text" name="titulo_libro"
+                       class="form-control" >
+            </div>
+            <div class="form-group" >
+                <label for="autores_libro" >Autores:</label>
+                <input id="autores_libro" type="text" name="autores_libro"
+                       class="form-control" >
+            </div>
+            <div class="form-group" >
+                <label for="editorial_libro" >Editorial:</label>
+                <input id="editorial_libro" type="text" name="editorial_libro"
+                       class="form-control" >
+            </div>
+            <div class="form-group" >
+                <label for="fecha_libro" >Fecha:</label>
+                <input id="fecha_libro" type="text" name="fecha_libro"
+                       class="form-control" >
+            </div>
+            <button type="submit" name="enviar_btn" class="btn btn-success" >
+                Registrar
+            </button>
+        </form>
+        <%- include('comunes/pie_pagina') %>
+        <script >
+            $('#datos_usuario').submit(function(eventoEnviar) {
+                eventoEnviar.preventDefault()
+                let idLibro = $('#identificador_libro')
+                let tituloLibro = $('#titulo_libro')
+                let autoresLibro = $('#autores_libro')
+                let editorialLibro = $('#editorial_libro')
+                let fechaLibro = $('#fecha_libro')
+                let form = $(this)
+                $.ajax({
+                    type: 'POST',
+                    url: `/libros/${idLibro.val()}/${tituloLibro.val()}/\
+                          ${autoresLibro.val()}/\
+                          ${editorialLibro.val()}/\
+                          ${fechaLibro.val()}`,
+                    data: form.serialize(),
+                    success: function(respuesta) {
+                        idLibro.val('')
+                        tituloLibro.val('')
+                        autoresLibro.val('')
+                        editorialLibro.val('')
+                        fechaLibro.val('')
+                        alert(`Libro registrado: "${respuesta}"`)
+                    },
+                    error: function(ajax, mensaje) {
+                        alert('Ocurrió un problema al registrar el libro.')
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

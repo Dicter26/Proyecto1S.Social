@@ -4,6 +4,10 @@ const mongoose = require('mongoose')
 const Registro = require('../modelos/modeloRegistro')
 const registroControlador = require('../controladores/registroControlador')
 
+router.get('/', (peticion, respuesta) => {
+    respuesta.render('index')
+})
+
 //definicion de la rutas para manejar las peticiones del cliente
 //POST petición a /libros para crear un nuevo libro
 router.post('/libros', registroControlador.registrarLibroNuevo)

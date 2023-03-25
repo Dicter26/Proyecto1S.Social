@@ -33,6 +33,7 @@ exports.obtenerLibro = async (req, res) => {
         const registro = await Registro.findOne({ _id: req.params.id })
         console.log({ registro })
         res.status(200).json({ registro })
+        respuesta.render('libro', {registro})
     }catch (error){
         res.status(500).json({ message: error.message })
     }
